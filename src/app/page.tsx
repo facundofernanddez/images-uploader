@@ -17,6 +17,15 @@ export default function Home() {
 
   const uploadImg = useCallback(
     async (image: File[]) => {
+      if (
+        image.map((img) => {
+          !img.type.includes("image");
+          alert("Please upload image file");
+        })
+      ) {
+        return;
+      }
+
       setIsUploading(true);
       setFiles(image);
 
@@ -29,7 +38,7 @@ export default function Home() {
         setIsUploaded(true);
       }
     },
-    [startUpload]
+    [startUpload, files]
   );
 
   const onDrop = useCallback(
