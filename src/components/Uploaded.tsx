@@ -46,6 +46,7 @@ export default function Uploaded({ imgUrl }: { imgUrl: string }) {
           className="w-[338px] h-[224.4px] rounded-xl"
           width={400}
           height={400}
+          priority
         />
 
         <div className="flex bg-gray-50 border rounded-lg w-[338px] h-[34px] justify-between">
