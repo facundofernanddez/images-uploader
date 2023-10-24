@@ -8,7 +8,6 @@ import Uploaded from "@/components/Uploaded";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function Home() {
-  const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
   const [imgUrl, setImgUrl] = useState<string>("");
@@ -27,7 +26,6 @@ export default function Home() {
       }
 
       setIsUploading(true);
-      setFiles(image);
 
       const res = await startUpload(image);
 
@@ -38,7 +36,7 @@ export default function Home() {
         setIsUploaded(true);
       }
     },
-    [startUpload, files]
+    [startUpload]
   );
 
   const onDrop = useCallback(
