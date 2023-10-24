@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import type { FileWithPath } from "@uploadthing/react";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useDropzone } from "@uploadthing/react/hooks";
 import Uploading from "@/components/Uploading";
 import Uploaded from "@/components/Uploaded";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Home() {
   const [files, setFiles] = useState<File[]>([]);
@@ -13,53 +13,47 @@ export default function Home() {
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
   const [imgUrl, setImgUrl] = useState<string>("");
 
-  const { startUpload } = useUploadThing("imageUploader", {
-    onUploadError: () => {
-      alert("error occurred while uploading");
-      setIsUploaded(false);
-      setIsUploading(false);
-    },
-  });
+  const { startUpload } = useUploadThing("imageUploader");
 
-  const onDrop = useCallback(
-    async (acceptedFiles: FileWithPath[]) => {
-      setFiles(acceptedFiles);
+  const uploadImg = useCallback(
+    async (image: File[]) => {
       setIsUploading(true);
+      setFiles(image);
 
-      const res = await startUpload(acceptedFiles);
+      const res = await startUpload(image);
 
-      console.log(res?.[0].url);
-      setImgUrl(res?.[0].url as string);
+      if (res && res[0] && res[0].url) {
+        setImgUrl(res?.[0].url);
 
-      setIsUploading(false);
-      setIsUploaded(true);
+        setIsUploading(false);
+        setIsUploaded(true);
+      }
     },
     [startUpload]
   );
 
-  const uploadImg = async (image: File[]) => {
-    setIsUploading(true);
-    setFiles(image);
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 1) {
+        setIsUploaded(false);
+        setIsUploading(false);
+        toast.error("Only one file", { duration: 3000 });
+        return;
+      }
 
-    const res = await startUpload(image);
-
-    if (res && res[0] && res[0].url) {
-      setImgUrl(res?.[0].url);
-
-      setIsUploading(false);
-      setIsUploaded(true);
-    }
-  };
+      await uploadImg(acceptedFiles);
+    },
+    [uploadImg]
+  );
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      console.log("file: ", file);
 
       if (!file.type.includes("image"))
-        return window.alert("Please upload image file");
+        return alert("Please upload image file");
 
       await uploadImg([file]);
     }
@@ -208,6 +202,7 @@ export default function Home() {
       )}
       {isUploading && !isUploaded && <Uploading />}
       {isUploaded && !isUploading && <Uploaded imgUrl={imgUrl} />}
+      <Toaster />
     </main>
   );
 }
