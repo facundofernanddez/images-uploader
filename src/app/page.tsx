@@ -19,7 +19,7 @@ export default function Home() {
       if (
         image.map((img) => {
           !img.type.includes("image");
-          alert("Please upload image file");
+          alert("Please upload an image file");
         })
       ) {
         return;
