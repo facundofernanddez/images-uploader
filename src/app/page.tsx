@@ -16,12 +16,16 @@ export default function Home() {
 
   const uploadImg = useCallback(
     async (image: File[]) => {
-      if (
-        image.map((img) => {
-          !img.type.includes("image");
-          alert("Please upload an image file");
-        })
-      ) {
+      // if (
+      //   image.map((img) => {
+      //     !img.type.includes("image");
+      //     alert("Please upload an image file");
+      //   })
+      // ) {
+      //   return;
+      // }
+
+      if (!image[0].type.includes("image")) {
         return;
       }
 
