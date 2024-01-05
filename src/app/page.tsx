@@ -25,6 +25,7 @@ export default function Home() {
       //   return;
       // }
 
+      //refact that function
       if (!image[0].type.includes("image")) {
         return;
       }
